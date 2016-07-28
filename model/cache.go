@@ -2,26 +2,12 @@ package model
 
 import (
 	"bytes"
-	"errors"
-	//	pb "cst_im/model"
 	"encoding/base64"
 	"encoding/gob"
-	//	"fmt"
+	"errors"
 
 	"github.com/garyburd/redigo/redis"
 )
-
-var c redis.Conn
-
-func init() {
-	var err error
-	c, err = redis.Dial("tcp", "localhost:6379")
-	if err != nil {
-		panic(err)
-	}
-}
-
-//在redis中，存储用户的信息时，key为用户的id，value为User
 
 //存入一个用户进redis
 func AddUserIntoCache(user *User) (bool, error) {
@@ -32,7 +18,7 @@ func AddUserIntoCache(user *User) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	reply, err := c.Do("SET", user.UesrName, str)
+	reply, err := cache.Do("SET", user.UesrName, str)
 	if err != nil {
 		return false, err
 	}
@@ -47,7 +33,7 @@ func GetUserFromCache(uname string) (*User, error) {
 	if len(uname) <= 0 {
 		return nil, errors.New("the user name is invalid")
 	}
-	reply, err := redis.String(c.Do("GET", uname))
+	reply, err := redis.String(cache.Do("GET", uname))
 	if err != nil {
 		return nil, err
 	}

@@ -5,10 +5,6 @@ import (
 	pb "cst_im/model"
 	"cst_im/util"
 	"fmt"
-	//	"fmt"
-	// "fmt"
-	//	"fmt"
-	//	"os"
 
 	"github.com/golang/protobuf/proto"
 )
@@ -42,7 +38,9 @@ func (this *SearchListener) onProcess(msg pb.Msg) {
 			return
 		}
 		newMsg.OptResult = *proto.String(SUCCESS)
-		newMsg.Groups = append(newMsg.GetGroups(), group)
+		newMsg.Groups = make([]*model.Group, 1)
+		newMsg.Groups[0] = group
+		fmt.Println(*group)
 		this.Conn.Write(newMsg)
 	case util.SEEK_NAME:
 		user, err := model.SearchUserWithUserNamne(msg.SrchInfo)
